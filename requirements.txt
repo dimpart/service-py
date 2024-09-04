@@ -1,0 +1,36 @@
+Werkzeug   # 1.0.1
+xmltodict  # 0.12.0
+
+pycryptodome  # 3.14.1
+base58        # 1.0.3
+ecdsa         # 0.16.1
+
+greenlet   # 1.1.2
+gevent     # 21.8.0
+
+requests   # 2.21.0
+
+urllib3    # 1.24.1
+
+async-timeout # 4.0.3
+# aiosignal   # 1.3.1
+# asynctest   # 0.13.0
+# attrs       # 23.2.0
+# frozenlist  # 1.3.3
+# multidict   # 6.0.5
+# yarl        # 1.9.4
+# aiohttp     # 3.8.6
+# charset-normalizer # 3.3.2
+
+aiou==0.3.0
+tvbox==1.0.0
+
+startrek==2.2.0
+tcp==2.2.0
+
+mkm==2.1.0
+dkd==2.1.0
+dimp==2.1.0
+dimsdk==2.1.0
+dimplugins==2.1.0
+dimples==1.3.0
