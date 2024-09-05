@@ -31,7 +31,8 @@ from dimp import FileContent, TextContent
 from dimples.utils import SharedCacheManager
 from dimples.database import Storage
 
-from libs.utils import json_decode
+from tvbox.utils import json_decode
+
 from libs.utils import Logging
 from libs.utils import Config
 
@@ -159,20 +160,18 @@ class WebPageService(BaseService, Logging):
             self.error(msg='text content error: %s' % content)
             return
         else:
-            keyword = text.strip().lower()
-        # process
-        if keyword == 'china travel':
+            title = text.strip()
+            title = title.lower()
             master = self.master
-            text = await master.get_page(title=keyword)
-            text_format = await master.get_format(title=keyword)
-            await self._respond_homepage(text=text, text_format=text_format, request=request)
-        else:
-            self.error(msg='ignore request "%s" from %s' % (text, request.identifier))
+        # load page content with title
+        text_page = await master.get_page(title=title)
+        text_format = await master.get_format(title=title)
+        await self._respond_homepage(title=text, text=text_page, text_format=text_format, request=request)
 
-    async def _respond_homepage(self, text: Optional[str], text_format: Optional[str], request: Request):
+    async def _respond_homepage(self, title: str, text: Optional[str], text_format: Optional[str], request: Request):
         if text is None:
             text = '## 404 Not Found\n' \
-                   'The requested resource could not be found but may be available in the future.'
+                   'The resource (**%s**) not exists.' % title.strip()
             text_format = 'markdown'
         elif text_format is None:
             text_format = 'markdown'

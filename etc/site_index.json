@@ -1,0 +1,10 @@
+# -*- coding: utf-8 -*-
+#
+#   Configuration for Web Master
+#
+
+{
+
+  "news today": "/var/dim/protected/sites/page_news.md"
+
+}

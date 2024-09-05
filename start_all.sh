@@ -30,7 +30,7 @@ function title() {
 
 title "DIM Service Bots"
 restart tvbox "bots/sebot_tv.py"
-restart sites "bots/sebot_sites.py"
+restart sites "bots/sebot_site.py"
 
 echo ""
 echo "    >>> Done <<<"

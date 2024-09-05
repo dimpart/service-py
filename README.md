@@ -72,7 +72,7 @@ sites = test_bot@2tyKqx2nPwtYnmf4T3p3mbKwaGfW1fUSpb
 index = http://tfs.dim.chat/tvbox/index.json
 
 [webmaster]
-indexes = /var/dim/protected/webmaster/index.json
+indexes = /var/dim/protected/sites/index.json
 ```
 
 ### 2. Generate accounts
@@ -172,23 +172,23 @@ Do the same steps to get another bot account to update ```ans.sites```.
 Create index file for sites:
 
 ```
-mkdir -p /var/dim/protected/webmaster/
-vim /var/dim/protected/webmaster/index.json
+mkdir -p /var/dim/protected/sites/
+vim /var/dim/protected/sites/index.json
 ```
 
 For example:
 
 ```
 {
-    "china travel": "/var/dim/protected/webmaster/china_travel.md"
+    "news today": "/var/dim/protected/sites/page_news.md"
 }
 ```
 
-And then edit your site page ```/var/dim/protected/webmaster/china_travel.md```:
+And then edit your site page ```/var/dim/protected/sites/page_news.md```:
 
 ```
 ## Hello world!
-This is a page written in markdown format
+This is a page written in markdown format.
 ```
 
 If everything is OK, you should be able to launch your bot now!
