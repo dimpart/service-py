@@ -42,16 +42,11 @@ from libs.database.redis import RedisConnector
 from libs.database import DbInfo
 from libs.database import Database
 
-from libs.chat import ChatStorage
-
 from libs.client import ClientSession, ClientMessenger
 from libs.client import ClientProcessor, ClientPacker
 from libs.client import Terminal
-from libs.client import Emitter, Monitor
+from libs.client import Emitter
 from libs.client import SharedGroupManager
-
-from libs.av.tv_movie import TVScan
-from libs.av.tv_movie import WebMaster
 
 
 @Singleton
@@ -126,16 +121,6 @@ async def create_config(app_name: str, default_config: str) -> Config:
             bot = {}
             config['bot'] = bot
         bot['id'] = str(identifier)
-    # config tvbox
-    index_uri = config.get_string(section='tvbox', option='index')
-    if index_uri is not None:
-        TVScan.INDEX_URI = index_uri
-    list_desc = config.get_string(section='tvbox', option='description')
-    if list_desc is not None:
-        TVScan.LIST_DESC = list_desc
-    # config webmaster
-    wm = WebMaster()
-    wm.config = config
     # OK
     return config
 
@@ -173,9 +158,6 @@ async def create_database(config: Config) -> Database:
         for node in neighbors:
             print('adding neighbor node: %s' % node)
             await db.add_station(identifier=None, host=node.host, port=node.port, provider=provider)
-    # config chat storage
-    cs = ChatStorage()
-    cs.root = config.get_string(section='history', option='root')
     return db
 
 
@@ -205,9 +187,6 @@ async def create_facebook(database: AccountDBI, current_user: ID) -> CommonFaceb
     # set for group manager
     g_man = SharedGroupManager()
     g_man.facebook = facebook
-    # config chat storage
-    cs = ChatStorage()
-    cs.bot = current_user
     return facebook
 
 
@@ -289,8 +268,5 @@ async def start_bot(default_config: str, app_name: str, ans_name: str, processor
     # set messenger to emitter
     emitter = Emitter()
     emitter.messenger = messenger
-    # set config to monitor
-    monitor = Monitor()
-    monitor.config = config
     # create terminal
     return Terminal(messenger=messenger)

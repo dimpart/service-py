@@ -31,7 +31,6 @@
 
 from typing import Optional, Tuple, List, Dict
 
-from dimples import URI, DateTime
 from dimples import SymmetricKey, PrivateKey, SignKey, DecryptKey
 from dimples import ID, Meta, Document
 from dimples import ReliableMessage
@@ -46,12 +45,8 @@ from dimples.database import DocumentTable
 from dimples.database import GroupTable
 from dimples.database import GroupHistoryTable
 
-from ..common import Season, VideoDBI
 
-from .t_video import SeasonTable, VideoSearchTable
-
-
-class Database(AccountDBI, MessageDBI, SessionDBI, VideoDBI):
+class Database(AccountDBI, MessageDBI, SessionDBI):
 
     def __init__(self, info: DbInfo):
         super().__init__()
@@ -67,9 +62,6 @@ class Database(AccountDBI, MessageDBI, SessionDBI, VideoDBI):
         self.__cipherkey_table = CipherKeyTable(info=info)
         # # ANS
         # self.__ans_table = AddressNameTable(info=info)
-        # Video
-        self.__season_table = SeasonTable(info=info)
-        self.__search_table = VideoSearchTable(info=info)
 
     def show_info(self):
         # Entity
@@ -82,9 +74,6 @@ class Database(AccountDBI, MessageDBI, SessionDBI, VideoDBI):
         self.__cipherkey_table.show_info()
         # # ANS
         # self.__ans_table.show_info()
-        # Video
-        self.__season_table.show_info()
-        self.__search_table.show_info()
 
     """
         Private Key file for Users
@@ -431,23 +420,3 @@ class Database(AccountDBI, MessageDBI, SessionDBI, VideoDBI):
     async def remove_stations(self, provider: ID) -> bool:
         # TODO: remove all stations for ISP
         return True
-
-    #
-    #   Video DBI
-    #
-
-    # Override
-    async def save_season(self, season: Season, url: URI) -> bool:
-        return await self.__season_table.save_season(season=season, url=url)
-
-    # Override
-    async def load_season(self, url: URI) -> Optional[Season]:
-        return await self.__season_table.load_season(url=url)
-
-    # Override
-    async def save_search_results(self, results: List[URI], keywords: str) -> bool:
-        return await self.__search_table.save_results(results=results, keywords=keywords)
-
-    # Override
-    async def load_search_results(self, keywords: str) -> Tuple[Optional[List[URI]], Optional[DateTime]]:
-        return await self.__search_table.load_results(keywords=keywords)

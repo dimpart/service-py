@@ -34,13 +34,13 @@ from dimples.client import ClientContentProcessorCreator
 from dimples.client import ClientMessenger
 from dimples.client import Terminal
 
-from .processor import ClientProcessor
-from .packer import ClientPacker
+from .group import SharedGroupManager
 
 from .emitter import Emitter
-from .monitor import Monitor
 
-from .group import SharedGroupManager
+from .packer import ClientPacker
+from .processor import ClientProcessor
+from .processor import Service
 
 
 __all__ = [
@@ -53,12 +53,12 @@ __all__ = [
     'ClientMessenger',
     'Terminal',
 
-    'ClientProcessor',
-    'ClientPacker',
+    'SharedGroupManager',
 
     'Emitter',
-    'Monitor',
 
-    'SharedGroupManager',
+    'ClientPacker',
+    'ClientProcessor',
+    'Service',
 
 ]

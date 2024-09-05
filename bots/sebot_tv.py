@@ -39,24 +39,23 @@ path = Path.dir(path=path)
 Path.add(path=path)
 
 from libs.utils import Log, Runner
-from libs.chat import ChatClient
-from libs.client import ClientProcessor
+from libs.client import ClientProcessor, Service
+from engine import LiveStreamService
 
-from libs.av.tv_movie import SearchClient
-
+from bots.shared import GlobalVariable
 from bots.shared import start_bot
 
 
 class BotMessageProcessor(ClientProcessor):
 
     # Override
-    def _create_chat_client(self) -> ChatClient:
-        client = SearchClient(facebook=self.facebook)
-        # TODO: add search engines
-        # ...
-        # Runner.async_task(coro=client.start())
-        Runner.thread_run(runner=client)
-        return client
+    def _create_service(self) -> Service:
+        shared = GlobalVariable()
+        config = shared.config
+        # create & run service
+        service = LiveStreamService(config=config)
+        Runner.thread_run(runner=service)
+        return service
 
 
 #

@@ -38,6 +38,6 @@ function finish() {
 #
 
 title "TVBox Scanner"
-start tvbox "tvbox" "scan lives"
+start tvbox-scan "tvbox" "scan lives"
 
 finish
