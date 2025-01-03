@@ -43,7 +43,7 @@ from libs.client import ClientProcessor, Service
 from engine import LiveStreamService
 
 from bots.shared import GlobalVariable
-from bots.shared import start_bot
+from bots.shared import create_config, start_bot
 
 
 class BotMessageProcessor(ClientProcessor):
@@ -54,7 +54,9 @@ class BotMessageProcessor(ClientProcessor):
         config = shared.config
         # create & run service
         service = LiveStreamService(config=config)
-        Runner.thread_run(runner=service)
+        # Runner.thread_run(runner=service)
+        thr = Runner.async_thread(coro=service.run())
+        thr.start()
         return service
 
 
@@ -68,15 +70,14 @@ DEFAULT_CONFIG = '/etc/dim_bots/config.ini'
 
 
 async def async_main():
-    # create & start bot
-    client = await start_bot(default_config=DEFAULT_CONFIG,
-                             app_name='ServiceBot: TV Box',
-                             ans_name='tvbox',
-                             processor_class=BotMessageProcessor)
-    # main run loop
-    await client.start()
-    await client.run()
-    # await client.stop()
+    # create global variable
+    shared = GlobalVariable()
+    config = await create_config(app_name='ChatBot: TV Box', default_config=DEFAULT_CONFIG)
+    await shared.prepare(config=config)
+    #
+    #  Create & start the bot
+    #
+    client = await start_bot(ans_name='tvbox', processor_class=BotMessageProcessor)
     Log.warning(msg='bot stopped: %s' % client)
 
 

@@ -16,14 +16,14 @@ Secure chat services, powered by [DIM-Python](https://github.com/dimchat/demo-py
 ### 0. Download source codes and requirements
 
 ```shell
-cd ~/Documents/
-mkdir -p github.com; cd github.com/
+cd ~/
+mkdir -p github.com/dimpart
 
-# project source codes
-mkdir -p dimpart; cd dimpart/
+# clone source codes
+cd github.com/dimpart/
 git clone https://github.com/dimpart/service-py.git
 
-# requirements
+# install requirements
 cd service-py
 pip3 install -r requirements.txt
 
@@ -35,7 +35,7 @@ Clone ```config.ini```:
 
 ```shell
 mkdir -p /etc/dim_bots
-cd ~/Documents/github.com/dimpart/service-py
+cd ~/github.com/dimpart/service-py
 
 cp etc/config.ini /etc/dim_bots/config.ini
 
@@ -72,7 +72,7 @@ sites = test_bot@2tyKqx2nPwtYnmf4T3p3mbKwaGfW1fUSpb
 index = http://tfs.dim.chat/tvbox/index.json
 
 [webmaster]
-indexes = /var/dim/protected/sites/index.json
+indexes = /var/www/sites/index.json
 ```
 
 ### 2. Generate accounts
@@ -172,19 +172,19 @@ Do the same steps to get another bot account to update ```ans.sites```.
 Create index file for sites:
 
 ```
-mkdir -p /var/dim/protected/sites/
-vim /var/dim/protected/sites/index.json
+mkdir -p /var/www/sites/
+vim /var/www/sites/index.json
 ```
 
 For example:
 
 ```
 {
-    "news today": "/var/dim/protected/sites/page_news.md"
+    "news today": "/var/www/sites/page_news.md"
 }
 ```
 
-And then edit your site page ```/var/dim/protected/sites/page_news.md```:
+And then edit your site page ```/var/www/sites/page_news.md```:
 
 ```
 ## Hello world!

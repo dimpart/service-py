@@ -29,12 +29,13 @@
 
 """
 
+from dimples.common.compat import CommonLoader as ExtensionLoader
+from dimples.common import CommonArchivist as ClientArchivist
+
 from dimples.client import ClientSession, SessionState
-from dimples.client import ClientContentProcessorCreator
+from dimples.client import ClientFacebook
 from dimples.client import ClientMessenger
 from dimples.client import Terminal
-
-from .group import SharedGroupManager
 
 from .emitter import Emitter
 
@@ -45,20 +46,24 @@ from .processor import Service
 
 __all__ = [
 
+    'ExtensionLoader',
+
     #
     #   Client
     #
+
     'ClientSession', 'SessionState',
-    'ClientContentProcessorCreator',
+
+    'ClientArchivist',
+    'ClientFacebook',
+
     'ClientMessenger',
+    'ClientProcessor',
+    'ClientPacker',
+
     'Terminal',
 
-    'SharedGroupManager',
-
     'Emitter',
-
-    'ClientPacker',
-    'ClientProcessor',
     'Service',
 
 ]
