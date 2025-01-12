@@ -25,7 +25,7 @@
 
 import threading
 import time
-from typing import Optional, Dict
+from typing import Optional, Tuple, Dict
 
 from dimp import FileContent, TextContent
 from dimples.utils import SharedCacheManager
@@ -149,41 +149,56 @@ class WebPageService(BaseService, Logging):
     def master(self) -> WebMaster:
         return self.__master
 
+    # private
+    async def _get_page_content(self, title: str) -> Tuple[Optional[str], Optional[str]]:
+        # load page content with title
+        master = self.master
+        text_content = await master.get_page(title=title)
+        text_format = await master.get_format(title=title)
+        return text_content, text_format
+
     # Override
     async def _process_file_content(self, content: FileContent, request: Request):
         self.warning(msg='TODO: process file content from "%s"' % request.identifier)
 
     # Override
     async def _process_text_content(self, content: TextContent, request: Request):
-        text = content.text
-        if text is None or len(text) == 0:
-            self.error(msg='text content error: %s' % content)
-            return
-        else:
-            title = text.strip()
-            title = title.lower()
-            master = self.master
+        # get keywords
+        keywords = content.get_str(key='keywords', default='')
+        if len(keywords) == 0:
+            keywords = content.get_str(key='title', default='')
+            if len(keywords) == 0:
+                # keywords = await request.get_text(facebook=self.facebook)
+                keywords = content.text
+                if keywords is None:
+                    self.error(msg='text content error: %s' % content)
+                    return
+        title = keywords.strip().lower()
         # load page content with title
-        text_page = await master.get_page(title=title)
-        text_format = await master.get_format(title=title)
-        await self._respond_homepage(title=text, text=text_page, text_format=text_format, request=request)
+        text, fmt = await self._get_page_content(title=title)
+        if text is None:
+            self.warning(msg='page content not found: "%s"' % keywords)
+        else:
+            self.info(msg='loaded %d bytes for page: "%s"' % (len(text), keywords))
+        await self._respond_homepage(title=keywords, text=text, text_format=fmt, request=request)
 
     async def _respond_homepage(self, title: str, text: Optional[str], text_format: Optional[str], request: Request):
         if text is None:
             text = '## 404 Not Found\n' \
-                   'The resource (**%s**) not exists.' % title.strip()
+                   'The resource **"%s"** not exists.' % title.strip()
             text_format = 'markdown'
         elif text_format is None:
             text_format = 'markdown'
         # search tag
-        tag = request.content.get('tag')
-        title = request.content.get('title')
-        hidden = request.content.get('hidden')
-        cid = request.identifier
-        self.info(msg='respond %d bytes with tag %s to %s' % (len(text), tag, cid))
+        content = request.content
+        tag = content.get('tag')
+        title = content.get('title')
+        hidden = content.get('hidden')
+        keywords = content.get('keywords')
+        self.info(msg='respond %d bytes with tag %s to %s' % (len(text), tag, request.identifier))
         return await self.respond_text(text=text, request=request, extra={
             'format': text_format,
-            'muted': 'yes',
+            'muted': hidden,
             'hidden': hidden,
 
             'app': 'chat.dim.sites',
@@ -193,4 +208,5 @@ class WebPageService(BaseService, Logging):
 
             'tag': tag,
             'title': title,
+            'keywords': keywords,
         })

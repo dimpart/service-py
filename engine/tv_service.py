@@ -77,19 +77,24 @@ class LiveStreamService(BaseService, Logging):
 
     # Override
     async def _process_text_content(self, content: TextContent, request: Request):
-        text = content.text
-        if text is None or len(text) == 0:
-            self.error(msg='text content error: %s' % content)
-            return
-        else:
-            keyword = text.strip().lower()
-        # process
-        if keyword == 'live stream sources':
+        # get keywords
+        keywords = content.get_str(key='keywords', default='')
+        if len(keywords) == 0:
+            keywords = content.get_str(key='title', default='')
+            if len(keywords) == 0:
+                # keywords = await request.get_text(facebook=self.facebook)
+                keywords = content.text
+                if keywords is None:
+                    self.error(msg='text content error: %s' % content)
+                    return
+        command = keywords.strip().lower()
+        # TV command
+        if command == 'live stream sources':
             self.clear_caches()
             array = await self.get_lives()
             await self._respond_live_urls(lives=array, request=request)
         else:
-            self.error(msg='ignore request "%s" from %s' % (text, request.identifier))
+            self.error(msg='ignore request "%s" from %s' % (keywords, request.identifier))
 
     async def _respond_live_urls(self, lives: List[Dict], request: Request):
         count = len(lives)
@@ -101,12 +106,15 @@ class LiveStreamService(BaseService, Logging):
         text += '\n----\n'
         text += 'Total %d source(s).' % count
         # search tag
-        tag = request.content.get('tag')
-        title = request.content.get('title')
-        hidden = request.content.get('hidden')
-        cid = request.identifier
-        self.info(msg='respond %d sources with tag %s to %s' % (count, tag, cid))
-        return await self.respond_markdown(text=text, request=request, muted='yes', extra={
+        content = request.content
+        tag = content.get('tag')
+        title = content.get('title')
+        hidden = content.get('hidden')
+        keywords = content.get('keywords')
+        self.info(msg='respond %d sources with tag %s to %s' % (count, tag, request.identifier))
+        return await self.respond_text(text=text, request=request, extra={
+            'format': 'markdown',
+            'muted': hidden,
             'hidden': hidden,
 
             'app': 'chat.dim.tvbox',
@@ -116,6 +124,8 @@ class LiveStreamService(BaseService, Logging):
 
             'tag': tag,
             'title': title,
+            'keywords': keywords,
+
             'lives': lives,
             'description': self.LIST_DESC,
         })
