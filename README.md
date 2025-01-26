@@ -1,12 +1,16 @@
 # Service Bots for DIM Network
 
-[![GitHub License](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/dimpart/service-py/master/LICENSE)
-[![Version](https://img.shields.io/badge/alpha-1.0.0-red.svg)](https://github.com/dimpart/service-py/archive/master.zip)
+[![License](https://img.shields.io/github/license/dimpart/service-py)](https://github.com/dimpart/service-py/blob/master/LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/dimpart/service-py/pulls)
 [![Platform](https://img.shields.io/badge/Platform-Python%203-brightgreen.svg)](https://github.com/dimpart/service-py/wiki)
-[![GitHub Issues](https://img.shields.io/github/issues/dimpart/service-py.svg)](https://github.com/dimpart/service-py/issues)
-[![GitHub Forks](https://img.shields.io/github/forks/dimpart/service-py.svg)](https://github.com/dimpart/service-py/network)
-[![GitHub Stars](https://img.shields.io/github/stars/dimpart/service-py.svg)](https://github.com/dimpart/service-py/stargazers)
+[![Issues](https://img.shields.io/github/issues/dimpart/service-py)](https://github.com/dimpart/service-py/issues)
+[![Repo Size](https://img.shields.io/github/repo-size/dimpart/service-py)](https://github.com/dimpart/service-py/archive/refs/heads/main.zip)
+[![Tags](https://img.shields.io/github/tag/dimpart/service-py)](https://github.com/dimpart/service-py/tags)
+
+[![Watchers](https://img.shields.io/github/watchers/dimpart/service-py)](https://github.com/dimpart/service-py/watchers)
+[![Forks](https://img.shields.io/github/forks/dimpart/service-py)](https://github.com/dimpart/service-py/forks)
+[![Stars](https://img.shields.io/github/stars/dimpart/service-py)](https://github.com/dimpart/service-py/stargazers)
+[![Followers](https://img.shields.io/github/followers/dimpart)](https://github.com/orgs/dimpart/followers)
 
 Secure chat services, powered by [DIM-Python](https://github.com/dimchat/demo-py).
 
@@ -20,7 +24,7 @@ cd ~/
 mkdir -p github.com/dimpart
 
 # clone source codes
-cd github.com/dimpart/
+cd ~/github.com/dimpart/
 git clone https://github.com/dimpart/service-py.git
 
 # install requirements
@@ -192,3 +196,8 @@ This is a page written in markdown format.
 ```
 
 If everything is OK, you should be able to launch your bot now!
+
+----
+
+Copyright &copy; 2024 Albert Moky
+[![Followers](https://img.shields.io/github/followers/moky)](https://github.com/moky?tab=followers)

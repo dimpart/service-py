@@ -77,7 +77,7 @@ async def async_main():
     #
     #  Create & start the bot
     #
-    client = await start_bot(ans_name='tvbox', processor_class=BotMessageProcessor)
+    client = await start_bot(ans_name='tvbox', section='tvbox', processor_class=BotMessageProcessor)
     Log.warning(msg='bot stopped: %s' % client)
 
 

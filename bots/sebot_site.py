@@ -77,7 +77,7 @@ async def async_main():
     #
     #  Create & start the bot
     #
-    client = await start_bot(ans_name='sites', processor_class=BotMessageProcessor)
+    client = await start_bot(ans_name='sites', section='webmaster', processor_class=BotMessageProcessor)
     Log.warning(msg='bot stopped: %s' % client)
 
 
