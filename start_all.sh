@@ -28,9 +28,28 @@ function title() {
     echo ""
 }
 
+
+if [[ "$*" == "restart" ]]
+then
+    launch="restart"
+    echo "========================"
+    echo "    Restarting ..."
+    echo "========================"
+else
+    launch="start"
+    echo "========================"
+    echo "    Starting ..."
+    echo "========================"
+fi
+
+
+#
+#   Service Bots
+#
+
 title "DIM Service Bots"
-restart tvbox "bots/sebot_tv.py"
-restart sites "bots/sebot_site.py"
+${launch} tvbox "bots/sebot_tv.py"
+${launch} sites "bots/sebot_site.py"
 
 echo ""
 echo "    >>> Done <<<"

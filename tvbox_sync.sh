@@ -13,7 +13,7 @@ function start() {
         echo "!!! starting $2 $3 >> ${log}"
         "$2" $3 >> "${log}" 2>&1 &
     else
-        for pid in ${res[*]}
+        for pid in ${res}
         do
             echo "!!! process exists: $2 $3 ($((pid)))"
         done
