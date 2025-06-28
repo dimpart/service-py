@@ -58,7 +58,7 @@ class WebMaster(Logging):
     @property  # protected
     def indexes(self) -> Optional[str]:
         config = self.config
-        return config.get_string(section='webmaster', option='indexes')
+        return config.get_string(section='sites', option='indexes')
 
     async def _load_file(self, path: str) -> Optional[str]:
         now = time.time()

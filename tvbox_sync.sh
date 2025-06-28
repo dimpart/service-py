@@ -39,5 +39,6 @@ function finish() {
 
 title "TVBox Syncing"
 start tvbox-sync "tvbox" "sync lives"
+#start tvbox-sync "/usr/local/bin/tvbox" "sync lives"
 
 finish

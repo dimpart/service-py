@@ -66,7 +66,7 @@ class BotMessageProcessor(ClientProcessor):
 Log.LEVEL = Log.DEVELOP
 
 
-DEFAULT_CONFIG = '/etc/dim_bots/config.ini'
+DEFAULT_CONFIG = '/etc/dim/bots.ini'
 
 
 async def async_main():

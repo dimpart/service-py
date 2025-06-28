@@ -39,5 +39,6 @@ function finish() {
 
 title "TVBox Scanner"
 start tvbox-scan "tvbox" "scan lives"
+#start tvbox-scan "/usr/local/bin/tvbox" "scan lives"
 
 finish
