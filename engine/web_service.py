@@ -164,10 +164,10 @@ class WebPageService(BaseService, Logging):
     # Override
     async def _process_text_content(self, content: TextContent, request: Request):
         # get keywords
-        keywords = content.get_str(key='keywords', default='')
-        if len(keywords) == 0:
-            keywords = content.get_str(key='title', default='')
-            if len(keywords) == 0:
+        keywords = content.get_str(key='keywords')
+        if keywords is None or len(keywords) == 0:
+            keywords = content.get_str(key='title')
+            if keywords is None or len(keywords) == 0:
                 # keywords = await request.get_text(facebook=self.facebook)
                 keywords = content.text
                 if keywords is None:

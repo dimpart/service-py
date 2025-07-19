@@ -29,7 +29,7 @@
 
 """
 
-from dimples.common.compat import CommonLoader as ExtensionLoader
+from dimples.common.compat import LibraryLoader
 from dimples.common import CommonArchivist as ClientArchivist
 
 from dimples.client import ClientSession, SessionState
@@ -46,7 +46,7 @@ from .processor import Service
 
 __all__ = [
 
-    'ExtensionLoader',
+    'LibraryLoader',
 
     #
     #   Client
