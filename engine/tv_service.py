@@ -25,7 +25,10 @@
 
 from typing import List, Dict
 
+from dimples import Content
 from dimples import FileContent, TextContent
+from dimples import CustomizedContent
+
 from tvbox.lives import LiveParser
 from tvbox import LiveConfig
 from tvbox import LiveLoader
@@ -77,13 +80,28 @@ class LiveStreamService(BaseService, Logging):
 
     # Override
     async def _process_text_content(self, content: TextContent, request: Request):
+        await self._request_lives(content=content, request=request)
+
+    # Override
+    async def _process_customized_content(self, content: CustomizedContent, request: Request):
+        app = content.application
+        mod = content.module
+        act = content.action
+        if app == 'chat.dim.tvbox':
+            if mod == 'lives' and act == 'request':
+                return await self._request_lives(content=content, request=request)
+        # error
+        sender = request.envelope.sender
+        self.error(msg='unknown customized content: app="%s" mod="%s" act="%s", sender: %s' % (app, mod, act, sender))
+
+    async def _request_lives(self, content: Content, request: Request):
         # get keywords
         keywords = content.get_str(key='keywords')
         if keywords is None or len(keywords) == 0:
             keywords = content.get_str(key='title')
             if keywords is None or len(keywords) == 0:
                 # keywords = await request.get_text(facebook=self.facebook)
-                keywords = content.text
+                keywords = content.get_str(key='text')
                 if keywords is None:
                     self.error(msg='text content error: %s' % content)
                     return

@@ -32,6 +32,7 @@ from dimples import ID
 from dimples import Envelope
 from dimples import Content
 from dimples import TextContent, FileContent
+from dimples import CustomizedContent
 
 from libs.utils import Runner
 from libs.client import Emitter
@@ -93,6 +94,9 @@ class BaseService(Runner, Service, ABC):
         elif isinstance(content, FileContent):
             self._add_request(content=content, envelope=envelope)
             return []
+        elif isinstance(content, CustomizedContent):
+            self._add_request(content=content, envelope=envelope)
+            return []
 
     # Override
     async def process(self) -> bool:
@@ -105,6 +109,8 @@ class BaseService(Runner, Service, ABC):
             await self._process_text_content(content=content, request=request)
         elif isinstance(content, FileContent):
             await self._process_file_content(content=content, request=request)
+        elif isinstance(content, CustomizedContent):
+            await self._process_customized_content(content=content, request=request)
         # task done,
         # return True to process next immediately
         return True
@@ -115,6 +121,10 @@ class BaseService(Runner, Service, ABC):
 
     @abstractmethod
     async def _process_file_content(self, content: FileContent, request: Request):
+        raise NotImplemented
+
+    @abstractmethod
+    async def _process_customized_content(self, content: CustomizedContent, request: Request):
         raise NotImplemented
 
     #
