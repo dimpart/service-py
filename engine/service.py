@@ -95,8 +95,10 @@ class BaseService(Runner, Service, ABC):
             self._add_request(content=content, envelope=envelope)
             return []
         elif isinstance(content, CustomizedContent):
-            self._add_request(content=content, envelope=envelope)
-            return []
+            app = content.application
+            if app in ['chat.dim.tvbox', 'chat.dim.sites']:
+                self._add_request(content=content, envelope=envelope)
+                return []
 
     # Override
     async def process(self) -> bool:

@@ -1,0 +1,15 @@
+{
+  "services": [
+    {
+      "type": "WebSites",
+      "did": "site_manager@2z1jM58mRZKzDWGxSZ265Pj7Ra9NTdWYPp",
+      "app": "chat.dim.sites",
+      "mod": "homepage",
+
+      "title": "China Travel",
+      "subtitle": "One World, One Dream!",
+      "provider": "Albert",
+      "icon": "https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/safari-icon.png"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "services": [
+    {
+      "type": "LiveSources",
+      "did": "tvbox@2xQCeEL1hS2R6p2hrmhzPgNxyZcRmSJx8z",
+      "app": "chat.dim.tvbox",
+      "mod": "lives",
+
+      "title": "Live Stream Sources",
+      "subtitle": "TV Box",
+      "provider": "TVBox",
+      "icon": "https://uxwing.com/wp-content/themes/uxwing/download/video-photography-multimedia/live-tv-icon.png"
+    }
+  ]
+}

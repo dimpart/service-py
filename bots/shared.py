@@ -25,7 +25,7 @@
 
 import getopt
 import sys
-from typing import Optional, List
+from typing import Optional, List, Dict
 
 from dimples import ID
 from dimples import Document
@@ -226,10 +226,9 @@ async def start_bot(ans_name: str, section: str, processor_class) -> Terminal:
     bot_id = ID.parse(bot_id)
     assert bot_id is not None, 'Failed to get Bot ID: %s' % config
     await shared.login(current_user=bot_id)
-    # update services
-    srv_path = config.get_string(section=section, option='services')
-    if srv_path is not None:
-        await update_services(file_path=srv_path)
+    # update file contents
+    if section is not None and len(section) > 0:
+        await update_services(config=config, section=section)
     # create terminal
     host = config.station_host
     port = config.station_port
@@ -240,8 +239,14 @@ async def start_bot(ans_name: str, section: str, processor_class) -> Terminal:
     return client
 
 
-async def update_services(file_path: str):
+async def update_services(config: Config, section: str) -> bool:
+    file_path = config.get_string(section=section, option='services')
+    if file_path is None:
+        return False
+    Log.info(msg='updating services: %s' % file_path)
     array = await Storage.read_json(path=file_path)
+    if isinstance(array, Dict):
+        array = array['services']
     if not isinstance(array, List):
         Log.warning(msg='failed to load services: %s, %s' % (file_path, array))
         return False
