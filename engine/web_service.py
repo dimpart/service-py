@@ -169,7 +169,8 @@ class WebPageService(BaseService, Logging):
 
     # Override
     async def _process_customized_content(self, content: CustomizedContent, request: Request):
-        app = content.application
+        # app = content.application
+        app = content.get_str(key='app')
         mod = content.module
         act = content.action
         if app == 'chat.dim.sites':

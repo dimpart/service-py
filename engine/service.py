@@ -32,7 +32,7 @@ from dimples import ID
 from dimples import Envelope
 from dimples import Content
 from dimples import TextContent, FileContent
-from dimples import CustomizedContent
+from dimples import AppContent, CustomizedContent
 
 from libs.utils import Runner
 from libs.client import Emitter
@@ -94,7 +94,7 @@ class BaseService(Runner, Service, ABC):
         elif isinstance(content, FileContent):
             self._add_request(content=content, envelope=envelope)
             return []
-        elif isinstance(content, CustomizedContent):
+        elif isinstance(content, AppContent):
             app = content.application
             if app in ['chat.dim.tvbox', 'chat.dim.sites']:
                 self._add_request(content=content, envelope=envelope)
