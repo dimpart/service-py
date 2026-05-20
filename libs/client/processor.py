@@ -46,7 +46,9 @@ class Service(ABC):
         :param envelope: request head
         :return: None to pass this content to system
         """
-        raise NotImplemented
+        raise NotImplementedError(
+            f'Not implemented: {type(self).__module__}.{type(self).__name__}.handle_request()'
+        )
 
 
 class ClientProcessor(ClientMessageProcessor, ABC):
@@ -58,13 +60,15 @@ class ClientProcessor(ClientMessageProcessor, ABC):
     @property
     def facebook(self) -> CommonFacebook:
         barrack = super().facebook
-        assert isinstance(barrack, CommonFacebook), 'facebook error: %s' % barrack
+        assert isinstance(barrack, CommonFacebook), f'facebook error: {barrack}'
         return barrack
 
     @abstractmethod
     def _create_service(self) -> Service:
         """ Create Service Handler """
-        raise NotImplemented
+        raise NotImplementedError(
+            f'Not implemented: {type(self).__module__}.{type(self).__name__}._create_service()'
+        )
 
     # Override
     async def process_content(self, content: Content, r_msg: ReliableMessage) -> List[Content]:

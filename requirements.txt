@@ -25,13 +25,14 @@ async-timeout # 4.0.3
 aiou==1.1.0
 tvbox==1.0.0
 
-startrek==2.2.2
-tcp==2.2.2
+# startrek==2.3.1
+# tcp==2.3.1
+# udp==2.3.1
 
-mkm==2.4.0
-dkd==2.4.0
-dimp==2.4.0
-dimsdk==2.4.0
-dimplugins==2.4.0
+# mkm==2.4.1
+# dkd==2.4.1
+# dimp==2.4.1
+# dimsdk==2.4.1
+# dimplugins==2.4.1
 
-dimples==1.6.1
+dimples==1.6.5

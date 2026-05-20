@@ -119,15 +119,21 @@ class BaseService(Runner, Service, ABC):
 
     @abstractmethod
     async def _process_text_content(self, content: TextContent, request: Request):
-        raise NotImplemented
+        raise NotImplementedError(
+            f'Not implemented: {type(self).__module__}.{type(self).__name__}._process_text_content()'
+        )
 
     @abstractmethod
     async def _process_file_content(self, content: FileContent, request: Request):
-        raise NotImplemented
+        raise NotImplementedError(
+            f'Not implemented: {type(self).__module__}.{type(self).__name__}._process_file_content()'
+        )
 
     @abstractmethod
     async def _process_customized_content(self, content: CustomizedContent, request: Request):
-        raise NotImplemented
+        raise NotImplementedError(
+            f'Not implemented: {type(self).__module__}.{type(self).__name__}._process_customized_content()'
+        )
 
     #
     #   Responses
@@ -166,6 +172,6 @@ def calibrate_time(content: Content, request: Request, period: float = 1.0):
     res_time = content.time
     req_time = request.time
     if req_time is None:
-        assert False, 'request error: %s' % req_time
+        assert False, f'request error: {req_time}'
     elif res_time is None or res_time <= req_time:
         content['time'] = req_time + period
