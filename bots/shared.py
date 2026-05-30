@@ -23,23 +23,22 @@
 # SOFTWARE.
 # ==============================================================================
 
-import getopt
-import sys
 from typing import Optional, List, Dict
 
 from dimples import ID
 from dimples import Document
 from dimples import CommonFacebook
 from dimples import AccountDBI, MessageDBI, SessionDBI
-from dimples.utils import Config
+
 from dimples.common import DocumentUtils
 from dimples.database import Storage
 from dimples.group import SharedGroupManager
 from dimples.client import ClientChecker
 
+from libs.utils import SysArgvParser
 from libs.utils import Log
-from libs.utils import Path
 from libs.utils import Singleton
+from libs.utils import Path, Config
 from libs.database import Database
 
 from libs.client import LibraryLoader
@@ -168,8 +167,7 @@ async def create_facebook(database: AccountDBI) -> CommonFacebook:
     return facebook
 
 
-def show_help(app_name: str, default_config: str):
-    cmd = sys.argv[0]
+def show_help(app_name: str, cmd: str, default_config: str):
     print('')
     print('    %s' % app_name)
     print('')
@@ -183,36 +181,25 @@ def show_help(app_name: str, default_config: str):
     print('')
 
 
-async def create_config(app_name: str, default_config: str) -> Config:
+async def create_config(sys_argv: SysArgvParser, default_config: str) -> Optional[Config]:
     """ load config """
-    try:
-        opts, args = getopt.getopt(args=sys.argv[1:],
-                                   shortopts='hf:',
-                                   longopts=['help', 'config='])
-    except getopt.GetoptError:
-        show_help(app_name=app_name, default_config=default_config)
-        sys.exit(1)
-    # check options
-    ini_file = None
-    for opt, arg in opts:
-        if opt == '--config':
-            ini_file = arg
-        else:
-            show_help(app_name=app_name, default_config=default_config)
-            sys.exit(0)
-    # check config filepath
+    #
+    #  get INI file
+    #
+    ini_file = sys_argv.get_opt(opt='config')
     if ini_file is None:
         ini_file = default_config
     if not await Path.exists(path=ini_file):
-        show_help(app_name=app_name, default_config=default_config)
-        print('')
-        print('!!! config file not exists: %s' % ini_file)
-        print('')
-        sys.exit(0)
-    # load config from file
+        Log.error('!!! config file not exists: %s', ini_file)
+        return None
+    shared = GlobalVariable()
+    #
+    #  load config
+    #
     config = Config()
     await config.load(path=ini_file)
-    print('>>> config loaded: %s => %s' % (ini_file, config))
+    Log.warning('>>> config loaded: %s => %s', ini_file, config)
+    await shared.prepare(config=config)
     return config
 
 

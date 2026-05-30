@@ -86,6 +86,7 @@ __all__ = [
     'Path', 'File', 'TextFile', 'JSONFile',
     'FrequencyChecker', 'RecentTimeChecker',
 
+    'SysArgvParser',
     'Log', 'Logging',
     'Config',
 
