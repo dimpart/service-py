@@ -48,8 +48,8 @@ fi
 #
 
 title "DIM Service Bots"
-${launch} tvbox "bots/sebot_tv.py"
-${launch} sites "bots/sebot_site.py"
+${launch} "tvbox" "bots/sebot_tv.py"
+${launch} "sites" "bots/sebot_site.py"
 
 echo ""
 echo "    >>> Done <<<"
