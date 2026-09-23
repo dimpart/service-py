@@ -38,44 +38,27 @@ from dimples import LoginCommand, GroupCommand, ResetCommand
 from dimples import AccountDBI, MessageDBI, SessionDBI
 from dimples import ServiceProvider
 from dimples import ProviderInfo, StationInfo
-from dimples import MetaUtils
-from dimples.utils import Config
-from dimples.database import PrivateKeyTable
-from dimples.database import CipherKeyTable
-from dimples.database import MetaTable
-from dimples.database import DocumentTable
-from dimples.database import GroupTable
-from dimples.database import GroupHistoryTable
+from dimples import Config
+from dimples import AccountDatabase
+from dimples import MessageDatabase
 
 
 class Database(AccountDBI, MessageDBI, SessionDBI):
 
     def __init__(self, config: Config):
         super().__init__()
+        # in-memory caches
         self.__users = []
         self.__contacts = {}
-        # Entity
-        self.__private_table = PrivateKeyTable(config=config)
-        self.__meta_table = MetaTable(config=config)
-        self.__document_table = DocumentTable(config=config)
-        self.__group_table = GroupTable(config=config)
-        self.__history_table = GroupHistoryTable(config=config)
-        # Message
-        self.__cipherkey_table = CipherKeyTable(config=config)
-        # # ANS
-        # self.__ans_table = AddressNameTable(info=info)
+        # dimples databases
+        #   AccountDatabase: private key / meta / document / group / group history
+        #   MessageDatabase: cipher key
+        self.__adb = AccountDatabase(config=config)
+        self.__mdb = MessageDatabase(config=config)
 
     def show_info(self):
-        # Entity
-        self.__private_table.show_info()
-        self.__meta_table.show_info()
-        self.__document_table.show_info()
-        self.__group_table.show_info()
-        self.__history_table.show_info()
-        # Message
-        self.__cipherkey_table.show_info()
-        # # ANS
-        # self.__ans_table.show_info()
+        self.__adb.show_info()
+        self.__mdb.show_info()
 
     """
         Private Key file for Users
@@ -87,19 +70,19 @@ class Database(AccountDBI, MessageDBI, SessionDBI):
 
     # Override
     async def save_private_key(self, key: PrivateKey, user: ID, key_type: str = 'M') -> bool:
-        return await self.__private_table.save_private_key(key=key, user=user, key_type=key_type)
+        return await self.__adb.save_private_key(key=key, user=user, key_type=key_type)
 
     # Override
     async def private_keys_for_decryption(self, user: ID) -> List[DecryptKey]:
-        return await self.__private_table.private_keys_for_decryption(user=user)
+        return await self.__adb.private_keys_for_decryption(user=user)
 
     # Override
     async def private_key_for_signature(self, user: ID) -> Optional[SignKey]:
-        return await self.__private_table.private_key_for_signature(user=user)
+        return await self.__adb.private_key_for_signature(user=user)
 
     # Override
     async def private_key_for_visa_signature(self, user: ID) -> Optional[SignKey]:
-        return await self.__private_table.private_key_for_visa_signature(user=user)
+        return await self.__adb.private_key_for_visa_signature(user=user)
 
     """
         Meta file for entities
@@ -111,13 +94,11 @@ class Database(AccountDBI, MessageDBI, SessionDBI):
 
     # Override
     async def save_meta(self, meta: Meta, identifier: ID) -> bool:
-        if not MetaUtils.match_id(identifier=identifier, meta=meta):
-            raise AssertionError('meta not match ID: %s' % identifier)
-        return await self.__meta_table.save_meta(meta=meta, identifier=identifier)
+        return await self.__adb.save_meta(meta=meta, identifier=identifier)
 
     # Override
     async def get_meta(self, identifier: ID) -> Optional[Meta]:
-        return await self.__meta_table.get_meta(identifier=identifier)
+        return await self.__adb.get_meta(identifier=identifier)
 
     """
         Document for Accounts
@@ -130,16 +111,11 @@ class Database(AccountDBI, MessageDBI, SessionDBI):
 
     # Override
     async def save_document(self, document: Document, identifier: ID) -> bool:
-        # check with meta first
-        meta = await self.get_meta(identifier=identifier)
-        assert meta is not None, 'meta not exists: %s' % document
-        # check document valid before saving it
-        if document.is_valid or document.verify(public_key=meta.public_key):
-            return await self.__document_table.save_document(document=document, identifier=identifier)
+        return await self.__adb.save_document(document=document, identifier=identifier)
 
     # Override
     async def get_documents(self, identifier: ID) -> List[Document]:
-        return await self.__document_table.get_documents(identifier=identifier)
+        return await self.__adb.get_documents(identifier=identifier)
 
     """
         User contacts
@@ -235,27 +211,27 @@ class Database(AccountDBI, MessageDBI, SessionDBI):
 
     # Override
     async def get_founder(self, group: ID) -> Optional[ID]:
-        return await self.__group_table.get_founder(group=group)
+        return await self.__adb.get_founder(group=group)
 
     # Override
     async def get_owner(self, group: ID) -> Optional[ID]:
-        return await self.__group_table.get_owner(group=group)
+        return await self.__adb.get_owner(group=group)
 
     # Override
     async def get_members(self, group: ID) -> List[ID]:
-        return await self.__group_table.get_members(group=group)
+        return await self.__adb.get_members(group=group)
 
     # Override
     async def save_members(self, members: List[ID], group: ID) -> bool:
-        return await self.__group_table.save_members(members=members, group=group)
+        return await self.__adb.save_members(members=members, group=group)
 
     # Override
     async def get_administrators(self, group: ID) -> List[ID]:
-        return await self.__group_table.get_administrators(group=group)
+        return await self.__adb.get_administrators(group=group)
 
     # Override
     async def save_administrators(self, administrators: List[ID], group: ID) -> bool:
-        return await self.__group_table.save_administrators(administrators=administrators, group=group)
+        return await self.__adb.save_administrators(administrators=administrators, group=group)
 
     #
     #   Group History DBI
@@ -263,23 +239,23 @@ class Database(AccountDBI, MessageDBI, SessionDBI):
 
     # Override
     async def save_group_history(self, group: ID, content: GroupCommand, message: ReliableMessage) -> bool:
-        return await self.__history_table.save_group_history(group=group, content=content, message=message)
+        return await self.__adb.save_group_history(group=group, content=content, message=message)
 
     # Override
     async def get_group_histories(self, group: ID) -> List[Tuple[GroupCommand, ReliableMessage]]:
-        return await self.__history_table.get_group_histories(group=group)
+        return await self.__adb.get_group_histories(group=group)
 
     # Override
     async def get_reset_command_message(self, group: ID) -> Tuple[Optional[ResetCommand], Optional[ReliableMessage]]:
-        return await self.__history_table.get_reset_command_message(group=group)
+        return await self.__adb.get_reset_command_message(group=group)
 
     # Override
     async def clear_group_member_histories(self, group: ID) -> bool:
-        return await self.__history_table.clear_group_member_histories(group=group)
+        return await self.__adb.clear_group_member_histories(group=group)
 
     # Override
     async def clear_group_admin_histories(self, group: ID) -> bool:
-        return await self.__history_table.clear_group_admin_histories(group=group)
+        return await self.__adb.clear_group_admin_histories(group=group)
 
     """
         Reliable message for Receivers
@@ -313,11 +289,11 @@ class Database(AccountDBI, MessageDBI, SessionDBI):
 
     # Override
     async def get_cipher_key(self, sender: ID, receiver: ID, generate: bool = False) -> Optional[SymmetricKey]:
-        return await self.__cipherkey_table.get_cipher_key(sender=sender, receiver=receiver, generate=generate)
+        return await self.__mdb.get_cipher_key(sender=sender, receiver=receiver, generate=generate)
 
     # Override
     async def cache_cipher_key(self, key: SymmetricKey, sender: ID, receiver: ID):
-        return await self.__cipherkey_table.cache_cipher_key(key=key, sender=sender, receiver=receiver)
+        return await self.__mdb.cache_cipher_key(key=key, sender=sender, receiver=receiver)
 
     # Override
     async def get_group_keys(self, group: ID, sender: ID) -> Optional[Dict[str, str]]:

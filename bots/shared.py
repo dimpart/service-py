@@ -30,8 +30,9 @@ from dimples import Document
 from dimples import CommonFacebook
 from dimples import AccountDBI, MessageDBI, SessionDBI
 
-from dimples.common import DocumentUtils
-from dimples.database import Storage
+from dimples import DocumentUtils
+from dimples import Storage
+
 from dimples.group import SharedGroupManager
 from dimples.client import ClientChecker
 
@@ -143,7 +144,7 @@ class GlobalVariable:
         visa = DocumentUtils.last_visa(documents=docs)
         if visa is not None:
             # refresh visa
-            visa = Document.parse(document=visa.copy_dict())
+            visa = Document.parse(document=visa.copy_map())
             visa.sign(private_key=sign_key)
             await archivist.save_document(document=visa, identifier=current_user)
         await facebook.set_current_user(user=user)
@@ -254,7 +255,7 @@ async def update_services(config: Config, section: str) -> bool:
     else:
         Log.info(msg='updating services for bot: %s, %s' % (user.identifier, array))
         # clone for modifying
-        visa = Document.parse(document=visa.copy_dict())
+        visa = Document.parse(document=visa.copy_map())
     # sign with services
     visa.set_property(name='services', value=array)
     visa.sign(private_key=sign_key)

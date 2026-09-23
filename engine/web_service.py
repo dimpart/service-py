@@ -30,8 +30,8 @@ from typing import Optional, Tuple, Dict
 from dimples import Content
 from dimples import FileContent, TextContent
 from dimples import CustomizedContent
-from dimples.utils import SharedCacheManager
-from dimples.database import Storage
+from dimples import SharedCacheManager
+from dimples import Storage
 
 from tvbox.utils import json_decode
 
