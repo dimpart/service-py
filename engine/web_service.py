@@ -23,7 +23,7 @@
 # SOFTWARE.
 # ==============================================================================
 
-import threading
+from small.lock import AsyncLock
 import time
 from typing import Optional, Tuple, Dict
 
@@ -51,7 +51,7 @@ class WebMaster(Logging):
         self.__config = config
         man = SharedCacheManager()
         self.__cache = man.get_pool(name='web_pages')  # path => text
-        self.__lock = threading.Lock()
+        self.__lock = AsyncLock.create()
 
     @property  # protected
     def config(self) -> Config:
@@ -83,7 +83,7 @@ class WebMaster(Logging):
         #
         #  2. lock for querying
         #
-        with self.__lock:
+        async with self.__lock:
             # locked, check again to make sure the cache not exists.
             # (maybe the cache was updated by other threads while waiting the lock)
             value, holder = cache_pool.fetch(key=path, now=now)
